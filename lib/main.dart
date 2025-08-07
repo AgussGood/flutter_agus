@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_agus/pages/auth/login_screen.dart';
+import 'package:flutter_agus/pages/menu_screen.dart';
 import 'package:flutter_agus/pages/post/list_post_screen.dart';
 import 'package:flutter_agus/services/auth_service.dart';
 
@@ -13,8 +14,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Auth Example',
-      home: AuthCheck(), 
+      debugShowCheckedModeBanner: false,
+      title: 'Belajar Flutter',
+      home: AuthCheck(),
     );
   }
 }
@@ -46,9 +48,9 @@ class _AuthCheckState extends State<AuthCheck> {
             body: Center(child: CircularProgressIndicator()),
           );
         } else if (snapshot.hasData && snapshot.data == true) {
-          return const ListPostScreen(); 
+          return MenuScreen();
         } else {
-          return LoginScreen(); 
+          return LoginScreen();
         }
       },
     );

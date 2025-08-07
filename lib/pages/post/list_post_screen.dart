@@ -7,11 +7,12 @@ class ListPostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      color: Colors.amber,
-      child: FutureBuilder<List<PostModel>>(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("List of Posts"),
+        backgroundColor: Colors.amber,
+      ),
+      body: FutureBuilder<List<PostModel>>(
         future: PostService.listPost(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -23,28 +24,41 @@ class ListPostScreen extends StatelessWidget {
           }
 
           final dataPost = snapshot.data ?? [];
+          if (dataPost.isEmpty) {
+            return Center(child: Text('No posts available.'));
+          }
+
           return ListView.builder(
-            scrollDirection: Axis.vertical,
+            padding: const EdgeInsets.all(12),
             itemCount: dataPost.length,
-            itemBuilder: (context, items) {
-              final data = dataPost[items];
-              return GestureDetector(
-                // onTap: () {
-                //   Navigator.push(
-                //     context,
-                //     MaterialPageRoute(builder: (_) => PostDetailScreen(
-                //       id: data.id.toString(),
-                //       title:data.title,
-                //       body: data.body,
-                //       userId: data.userId.toString(),
-                //     ),
-                //   ),
-                //  );
-                // },
+            itemBuilder: (context, index) {
+              final post = dataPost[index];
+              return Card(
+                elevation: 4,
+                margin: const EdgeInsets.symmetric(vertical: 8),
                 child: ListTile(
-                  leading: Text(data.id.toString()),
-                  title: Text(data.title),
-                  subtitle: Text('User Id : ${data.userId}'),
+                  leading: CircleAvatar(
+                    child: Text(post.id.toString()),
+                    backgroundColor: Colors.amber,
+                  ),
+                  title: Text(
+                    post.title,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 4),
+                      Text(post.body),
+                      SizedBox(height: 4),
+                      Text('User ID: ${post.userId}',
+                          style: TextStyle(fontSize: 12, color: Colors.grey)),
+                    ],
+                  ),
+                  isThreeLine: true,
+                  onTap: () {
+                    // TODO: Navigasi ke detail jika diperlukan
+                  },
                 ),
               );
             },
