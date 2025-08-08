@@ -9,10 +9,13 @@ class ListQuranScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue[50], // Latar belakang biru muda
       appBar: AppBar(
         title: const Text('Daftar Surah Al-Qur\'an'),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.lightBlueAccent,
         foregroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
       ),
       body: FutureBuilder<List<QuranModel>>(
         future: QuranService.listQuran(),
@@ -22,7 +25,12 @@ class ListQuranScreen extends StatelessWidget {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text('Terjadi kesalahan: ${snapshot.error}'));
+            return Center(
+              child: Text(
+                'Terjadi kesalahan: ${snapshot.error}',
+                style: const TextStyle(color: Colors.red),
+              ),
+            );
           }
 
           final surahList = snapshot.data ?? [];
@@ -32,17 +40,22 @@ class ListQuranScreen extends StatelessWidget {
           }
 
           return ListView.builder(
+            padding: const EdgeInsets.all(12),
             itemCount: surahList.length,
             itemBuilder: (context, index) {
               final surah = surahList[index];
 
               return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                elevation: 2,
+                color: Colors.lightBlue[100], // Card dengan warna biru muda
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 3,
+                margin: const EdgeInsets.symmetric(vertical: 8),
                 child: ListTile(
-                  contentPadding: const EdgeInsets.all(12),
+                  contentPadding: const EdgeInsets.all(16),
                   leading: CircleAvatar(
-                    backgroundColor: Colors.green,
+                    backgroundColor: Colors.blueAccent,
                     child: Text(
                       surah.nomor ?? '-',
                       style: const TextStyle(color: Colors.white),
@@ -52,11 +65,15 @@ class ListQuranScreen extends StatelessWidget {
                     '${surah.nama ?? 'Surah'} (${surah.asma ?? '-'})',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
                   ),
-                  subtitle: Text(
-                    '${surah.type} • ${surah.ayat} ayat\nArti: ${surah.arti}',
-                    style: const TextStyle(height: 1.4),
+                  subtitle: Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      '${surah.type} • ${surah.ayat} ayat\nArti: ${surah.arti}',
+                      style: const TextStyle(height: 1.5, fontSize: 13),
+                    ),
                   ),
                   isThreeLine: true,
                   onTap: () {

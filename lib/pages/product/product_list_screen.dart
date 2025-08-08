@@ -30,12 +30,26 @@ class _ProductListScreenState extends State<ProductListScreen> {
     });
   }
 
+  String formatRupiah(double number) {
+    return 'Rp ' +
+        number.toStringAsFixed(0).replaceAllMapped(
+              RegExp(r'(\d)(?=(\d{3})+(?!\d))'),
+              (Match m) => '${m[1]}.',
+            );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Products')),
+      appBar: AppBar(
+        title: const Text('Daftar Produk'),
+        backgroundColor: Colors.lightBlue.shade300,
+        foregroundColor: Colors.white,
+        centerTitle: true,
+      ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        backgroundColor: Colors.lightBlue.shade300,
+        child: const Icon(Icons.add),
         onPressed: () async {
           await Navigator.push(
             context,
@@ -48,9 +62,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
         future: _futureProducts,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting)
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           if (!snapshot.hasData || snapshot.data!.isEmpty)
-            return Center(child: Text("No products"));
+            return const Center(child: Text("Tidak ada produk"));
 
           return RefreshIndicator(
             onRefresh: _refreshProducts,
@@ -58,25 +72,43 @@ class _ProductListScreenState extends State<ProductListScreen> {
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
                 final product = snapshot.data![index];
-                return ListTile(
-                  leading: Image.network(
-                    'http://127.0.0.1:8000/storage/${product.image}',
-                    width: 50,
-                    errorBuilder: (_, __, ___) =>
-                        Icon(Icons.image_not_supported),
-                  ),
-                  title: Text(product.name),
-                  subtitle: Text('Rp ${product.price}'),
-                  onTap: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            ProductDetailScreen(productId: product.id),
+                return Card(
+                  color: Colors.lightBlue[50], // <== Warna biru lembut
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  elevation: 3,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(12),
+                    leading: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        'http://127.0.0.1:8000/storage/${product.image}',
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) =>
+                            const Icon(Icons.image_not_supported, size: 40),
                       ),
-                    );
-                    _refreshProducts(); // refresh setelah kembali dari detail/edit
-                  },
+                    ),
+                    title: Text(
+                      product.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      formatRupiah(product.price),
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                    onTap: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              ProductDetailScreen(productId: product.id),
+                        ),
+                      );
+                      _refreshProducts(); // refresh setelah kembali dari detail/edit
+                    },
+                  ),
                 );
               },
             ),

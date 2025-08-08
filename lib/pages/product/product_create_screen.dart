@@ -43,38 +43,98 @@ class _ProductCreateScreenState extends State<ProductCreateScreen> {
     if (success) {
       Navigator.pop(context);
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Failed to create product")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Failed to create product")),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Create Product")),
+      appBar: AppBar(
+        title: const Text("Create Product"),
+        backgroundColor: Colors.lightBlue.shade300,
+        foregroundColor: Colors.white,
+      ),
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Name
               TextField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: "Name"),
+                decoration: const InputDecoration(
+                  labelText: "Name",
+                  border: OutlineInputBorder(),
+                ),
               ),
+              const SizedBox(height: 16),
+
+              // Description
               TextField(
                 controller: _descController,
-                decoration: InputDecoration(labelText: "Description"),
+                decoration: const InputDecoration(
+                  labelText: "Description",
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
               ),
+              const SizedBox(height: 16),
+
+              // Price
               TextField(
                 controller: _priceController,
-                decoration: InputDecoration(labelText: "Price"),
+                decoration: const InputDecoration(
+                  labelText: "Price",
+                  border: OutlineInputBorder(),
+                  prefixText: "Rp ",
+                ),
                 keyboardType: TextInputType.number,
               ),
-              ElevatedButton(onPressed: pickImage, child: Text("Pick Image")),
-              if (_imageBytes != null) Image.memory(_imageBytes!, height: 100),
-              SizedBox(height: 20),
-              ElevatedButton(onPressed: submit, child: Text("Submit")),
+              const SizedBox(height: 16),
+
+              // Image picker
+              ElevatedButton.icon(
+                onPressed: pickImage,
+                icon: const Icon(Icons.image),
+                label: const Text("Pick Image"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightBlue.shade300,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // Preview image
+              if (_imageBytes != null)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.memory(_imageBytes!, height: 150),
+                ),
+
+              const SizedBox(height: 30),
+
+              // Submit
+              ElevatedButton(
+                onPressed: submit,
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 14),
+                  child: Text(
+                    "Submit Product",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightBlue.shade400,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

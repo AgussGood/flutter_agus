@@ -25,11 +25,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     if (_user == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const Scaffold(
+        backgroundColor: Colors.lightBlueAccent,
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
 
-    return SingleChildScrollView(
-      child: Padding(
+    return Scaffold(
+      backgroundColor: Colors.lightBlue[50],
+      appBar: AppBar(
+        title: const Text("Profil Pengguna"),
+        centerTitle: true,
+        backgroundColor: Colors.lightBlue.shade300,
+        foregroundColor: Colors.white,
+      ),
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
@@ -37,16 +47,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
             CircleAvatar(
               radius: 50,
               backgroundColor: Colors.blue.shade100,
-              child: Icon(Icons.person, size: 60, color: Colors.blue),
+              child: const Icon(Icons.person, size: 60, color: Colors.blue),
             ),
             const SizedBox(height: 16),
 
             // Username
             Text(
               _user!['name'],
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueAccent,
+              ),
             ),
-            Text(_user!['email'], style: TextStyle(color: Colors.grey[600])),
+            Text(
+              _user!['email'],
+              style: TextStyle(
+                color: Colors.grey[600],
+              ),
+            ),
             const SizedBox(height: 30),
 
             // Info Card
@@ -55,6 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 borderRadius: BorderRadius.circular(16),
               ),
               elevation: 4,
+              color: Colors.white,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
@@ -79,19 +99,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ElevatedButton.icon(
               onPressed: () async {
                 await AuthService().logout();
-                Navigator.pushReplacementNamed(
-                  context,
-                  '/',
-                ); // arahkan ke login
+                Navigator.pushReplacementNamed(context, '/');
               },
-              icon: Icon(Icons.logout),
-              label: Text("Logout"),
+              icon: const Icon(Icons.logout),
+              label: const Text("Logout"),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                backgroundColor: Colors.redAccent,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 32,
-                  vertical: 12,
+                  vertical: 14,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -108,8 +125,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: TextStyle(fontWeight: FontWeight.w500)),
-        Text(value),
+        Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+        Text(value, style: const TextStyle(color: Colors.black87)),
       ],
     );
   }

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_agus/models/product_model.dart';
 import 'package:flutter_agus/pages/menu_screen.dart';
-import 'package:flutter_agus/pages/product/product_list_screen.dart';
 import 'package:flutter_agus/services/product_service.dart';
 
 class ProductEditScreen extends StatefulWidget {
@@ -49,52 +48,119 @@ class _ProductEditScreenState extends State<ProductEditScreen> {
       widget.product.id,
       _nameController.text,
       _descController.text,
-      double.parse(_priceController.text),
+      double.tryParse(_priceController.text) ?? 0.0,
       _imageBytes,
       _imageName,
     );
+
     if (success) {
-      // Arahkan ke halaman ListProductPage
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => MenuScreen()),
       );
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Gagal memperbarui produk')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Gagal memperbarui produk')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Edit Product")),
+      appBar: AppBar(
+        title: const Text("Edit Product"),
+        backgroundColor: Colors.lightBlue.shade300,
+        foregroundColor: Colors.white,
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Name
               TextField(
                 controller: _nameController,
-                decoration: InputDecoration(labelText: "Name"),
+                decoration: const InputDecoration(
+                  labelText: "Name",
+                  border: OutlineInputBorder(),
+                ),
               ),
+              const SizedBox(height: 16),
+
+              // Description
               TextField(
                 controller: _descController,
-                decoration: InputDecoration(labelText: "Description"),
+                decoration: const InputDecoration(
+                  labelText: "Description",
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
               ),
+              const SizedBox(height: 16),
+
+              // Price
               TextField(
                 controller: _priceController,
-                decoration: InputDecoration(labelText: "Price"),
+                decoration: const InputDecoration(
+                  labelText: "Price",
+                  border: OutlineInputBorder(),
+                  prefixText: "Rp ",
+                ),
                 keyboardType: TextInputType.number,
               ),
-              ElevatedButton(
+              const SizedBox(height: 16),
+
+              // Image picker
+              ElevatedButton.icon(
                 onPressed: pickImage,
-                child: Text("Pick New Image"),
+                icon: const Icon(Icons.image),
+                label: const Text("Pick New Image"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightBlue.shade300,
+                  foregroundColor: Colors.white,
+                ),
               ),
-              if (_imageBytes != null) Image.memory(_imageBytes!, height: 100),
-              SizedBox(height: 20),
-              ElevatedButton(onPressed: submit, child: Text("Update")),
+              const SizedBox(height: 10),
+
+              // Preview image
+              if (_imageBytes != null)
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.memory(_imageBytes!, height: 150),
+                )
+              else
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    'http://127.0.0.1:8000/storage/${widget.product.image}', // ✅ Sesuai dengan model
+                    height: 150,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => const Text("No Image"),
+                  ),
+                ),
+
+              const SizedBox(height: 30),
+
+              // Submit button
+              ElevatedButton(
+                onPressed: submit,
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 14),
+                  child: Text(
+                    "Update Product",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.lightBlue.shade400,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
